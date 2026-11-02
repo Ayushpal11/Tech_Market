@@ -1,0 +1,1038 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>endtoendqa · Tech Market</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --card: #21262d;
+  --border: #30363d;
+  --fg: #e6edf3;
+  --fg-muted: #8b949e;
+  --blue: #58a6ff;
+  --purple: #bc8cff;
+  --amber: #d29922;
+  --green: #3fb950;
+  --red: #f85149;
+  --teal: #39d353;
+  --orange: #f0883e;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--fg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:14px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block: 0;
+  min-height:100vh;
+}
+code,pre,.mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(13,17,23,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;align-items:center;gap:0;
+  height:52px;
+}
+nav .brand{font-weight:700;font-size:15px;color:var(--blue);margin-right:32px;white-space:nowrap}
+nav .brand span{color:var(--fg-muted);font-weight:400}
+.nav-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;flex:1}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  background:none;border:none;color:var(--fg-muted);
+  padding:0 14px;height:52px;cursor:pointer;
+  font-size:13px;white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+}
+.tab-btn:hover{color:var(--fg)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── SECTIONS ── */
+.section{display:none;padding:32px 0 64px}
+.section.active{display:block}
+.section-inner{max-width:1100px;margin:0 auto}
+h1{font-size:28px;font-weight:700;margin-bottom:8px;text-wrap:balance}
+h2{font-size:20px;font-weight:600;margin-bottom:16px;color:var(--fg)}
+h3{font-size:15px;font-weight:600;margin-bottom:10px}
+.subtitle{color:var(--fg-muted);font-size:15px;margin-bottom:32px}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,rgba(88,166,255,.07) 0%,rgba(188,140,255,.07) 100%);
+  border:1px solid var(--border);border-radius:12px;
+  padding:40px;margin-bottom:40px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 80% 50%,rgba(188,140,255,.08),transparent);
+  pointer-events:none;
+}
+.hero h1{font-size:36px;color:var(--blue);margin-bottom:12px}
+.hero .tagline{font-size:17px;color:var(--fg-muted);max-width:600px;margin-bottom:28px}
+.stat-row{display:flex;gap:24px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;text-align:center;min-width:120px}
+.stat .val{font-size:28px;font-weight:700;color:var(--blue)}
+.stat .lbl{font-size:11px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+/* ── PIPELINE ── */
+.pipeline-scroll{overflow-x:auto;padding-bottom:8px}
+.pipeline-track{
+  display:flex;align-items:flex-start;gap:0;
+  min-width:1020px;padding:8px 0 16px;
+}
+.phase-col{display:flex;flex-direction:column;align-items:center;gap:0}
+.phase-arrow{color:var(--border);font-size:20px;padding:0 4px;margin-top:48px}
+.phase-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px 12px;width:140px;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+  position:relative;
+}
+.phase-card:hover,.phase-card.open{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)22}
+.phase-num{font-size:10px;color:var(--fg-muted);font-family:ui-monospace,monospace;margin-bottom:6px}
+.phase-name{font-size:12px;font-weight:600;line-height:1.3;margin-bottom:8px}
+.phase-badge{
+  display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;
+  font-family:ui-monospace,monospace;font-weight:600;
+}
+.badge-blue{background:rgba(88,166,255,.15);color:var(--blue)}
+.badge-purple{background:rgba(188,140,255,.15);color:var(--purple)}
+.badge-amber{background:rgba(210,153,34,.15);color:var(--amber)}
+.badge-green{background:rgba(63,185,80,.15);color:var(--green)}
+.badge-red{background:rgba(248,81,73,.15);color:var(--red)}
+.badge-teal{background:rgba(57,211,83,.15);color:var(--teal)}
+.badge-orange{background:rgba(240,136,62,.15);color:var(--orange)}
+.badge-gray{background:rgba(139,148,158,.12);color:var(--fg-muted)}
+
+.token-bar{height:3px;border-radius:2px;margin-top:10px;background:var(--border)}
+.token-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--purple))}
+
+.phase-detail{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:20px;margin-top:12px;
+  display:none;max-width:680px;
+}
+.phase-detail.open{display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.detail-section h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-muted);margin-bottom:8px}
+.chip-list{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  font-size:11px;font-family:ui-monospace,monospace;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:4px;padding:2px 8px;color:var(--fg-muted);
+}
+.chip.in{color:var(--blue);border-color:rgba(88,166,255,.3)}
+.chip.out{color:var(--green);border-color:rgba(63,185,80,.3)}
+.token-info{
+  margin-top:12px;padding:10px 14px;
+  background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.2);
+  border-radius:6px;font-size:12px;
+}
+.token-info .tk{color:var(--blue);font-weight:700;font-family:ui-monospace,monospace;font-size:15px}
+.sub-phases{margin-top:12px}
+.sub-phase{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 0;border-top:1px solid var(--border);
+}
+.sub-phase-id{
+  font-size:10px;font-family:ui-monospace,monospace;
+  color:var(--amber);min-width:36px;padding-top:2px;
+}
+.sub-phase-desc{font-size:12px;color:var(--fg-muted);line-height:1.5}
+
+/* ── TOKEN CHART ── */
+.token-chart{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.token-row{display:flex;align-items:center;gap:12px}
+.token-label{font-size:12px;color:var(--fg-muted);width:130px;text-align:right;flex-shrink:0;font-family:ui-monospace,monospace}
+.token-track{flex:1;height:20px;background:var(--card);border-radius:4px;overflow:hidden;position:relative}
+.token-segment{height:100%;float:left;border-radius:0;transition:width .4s}
+.token-val{font-size:11px;color:var(--fg-muted);width:70px;font-family:ui-monospace,monospace}
+
+/* ── GRID CARDS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
+.card h3{margin-bottom:10px}
+.card p{color:var(--fg-muted);font-size:13px;line-height:1.6}
+.card ul{color:var(--fg-muted);font-size:13px;padding-left:18px;line-height:1.8}
+.card .tag{font-size:10px;font-family:ui-monospace,monospace;color:var(--purple);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+
+/* ── TIMELINE ── */
+.timeline{border-left:2px solid var(--border);margin-left:16px;padding-left:24px;margin-top:20px}
+.tl-item{position:relative;margin-bottom:24px}
+.tl-dot{
+  position:absolute;left:-33px;top:4px;
+  width:12px;height:12px;border-radius:50%;border:2px solid;
+}
+.tl-dot.blue{background:rgba(88,166,255,.2);border-color:var(--blue)}
+.tl-dot.green{background:rgba(63,185,80,.2);border-color:var(--green)}
+.tl-dot.purple{background:rgba(188,140,255,.2);border-color:var(--purple)}
+.tl-dot.amber{background:rgba(210,153,34,.2);border-color:var(--amber)}
+.tl-when{font-size:11px;color:var(--fg-muted);margin-bottom:4px;font-family:ui-monospace,monospace}
+.tl-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.tl-desc{font-size:13px;color:var(--fg-muted);line-height:1.5}
+
+/* ── Q&A ── */
+.qa-list{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+.qa-item{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.qa-q{
+  padding:16px 20px;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+  transition:background .12s;
+}
+.qa-q:hover{background:var(--panel)}
+.qa-q-text{font-size:14px;font-weight:500;line-height:1.4}
+.qa-icon{color:var(--fg-muted);font-size:18px;flex-shrink:0;transition:transform .2s;margin-top:1px}
+.qa-item.open .qa-icon{transform:rotate(45deg)}
+.qa-a{
+  display:none;padding:0 20px 18px;
+  font-size:13px;color:var(--fg-muted);line-height:1.7;
+  border-top:1px solid var(--border);padding-top:14px;
+}
+.qa-item.open .qa-a{display:block}
+.qa-a code{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue);
+}
+.qa-a strong{color:var(--fg)}
+
+/* ── COVERAGE TABLE ── */
+.coverage-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+.coverage-table th{
+  text-align:left;padding:10px 14px;
+  background:var(--panel);color:var(--fg-muted);
+  font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;
+  border-bottom:1px solid var(--border);
+}
+.coverage-table td{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.coverage-table tr:last-child td{border-bottom:none}
+.coverage-table tr:hover td{background:rgba(255,255,255,.02)}
+.tc-num{font-family:ui-monospace,monospace;color:var(--blue);font-weight:700}
+.tc-be{color:var(--green);font-family:ui-monospace,monospace;font-size:12px}
+.tc-fe{color:var(--purple);font-family:ui-monospace,monospace;font-size:12px}
+
+/* ── GATE DIAGRAM ── */
+.gate-flow{
+  display:flex;align-items:center;gap:0;flex-wrap:wrap;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:20px;margin-top:16px;overflow-x:auto;
+}
+.gate-node{
+  display:flex;flex-direction:column;align-items:center;
+  padding:12px 14px;border-radius:8px;
+  background:var(--panel);border:1px solid var(--border);
+  font-size:11px;text-align:center;min-width:90px;
+}
+.gate-node.trigger{border-color:rgba(88,166,255,.4);background:rgba(88,166,255,.06)}
+.gate-node.gate{border-color:rgba(210,153,34,.4);background:rgba(210,153,34,.06)}
+.gate-node.fixer{border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.06)}
+.gate-node.codegen{border-color:rgba(188,140,255,.4);background:rgba(188,140,255,.06)}
+.gate-node .gicon{font-size:20px;margin-bottom:4px}
+.gate-arr{color:var(--border);font-size:18px;padding:0 6px;flex-shrink:0}
+.gate-label{font-size:10px;color:var(--fg-muted);margin-top:4px;font-family:ui-monospace,monospace}
+
+/* ── IMPROVEMENTS ── */
+.impr-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.impr-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:18px;position:relative;overflow:hidden;
+}
+.impr-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+}
+.impr-card.done::before{background:var(--green)}
+.impr-card.possible::before{background:var(--amber)}
+.impr-card h4{font-size:13px;font-weight:600;margin-bottom:8px}
+.impr-card p{font-size:12px;color:var(--fg-muted);line-height:1.6}
+.impr-tag{font-size:10px;font-family:ui-monospace,monospace;color:var(--fg-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .grid-2,.grid-3,.impr-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+  nav .brand{font-size:13px;margin-right:16px}
+  .hero{padding:24px}
+  .hero h1{font-size:26px}
+  .stat-row{gap:12px}
+  .stat .val{font-size:22px}
+}
+</style>
+
+<div class="app">
+<nav>
+  <div class="brand">endtoendqa <span>· Tech Market 2026</span></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" data-tab="overview">Overview</button>
+    <button class="tab-btn" data-tab="pipeline">Pipeline</button>
+    <button class="tab-btn" data-tab="tokens">Tokens</button>
+    <button class="tab-btn" data-tab="coverage">My Work</button>
+    <button class="tab-btn" data-tab="additions">What Was Added</button>
+    <button class="tab-btn" data-tab="improvements">What Can Improve</button>
+    <button class="tab-btn" data-tab="qa">Q &amp; A</button>
+  </div>
+</nav>
+
+<!-- ────────────── OVERVIEW ────────────── -->
+<section class="section active" id="tab-overview">
+<div class="section-inner">
+  <div class="hero">
+    <h1>endtoendqa</h1>
+    <p class="tagline">AI-powered QA pipeline that turns PRDs, specs and screen recordings into executable test automation — grounded by a Neo4j knowledge graph, enforced by multi-layer gates, and closed by autonomous Codex convergence loops.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="val">13</div><div class="lbl">Pipeline Phases</div></div>
+      <div class="stat"><div class="val">~600k</div><div class="lbl">Tokens / Full Run</div></div>
+      <div class="stat"><div class="val">25</div><div class="lbl">Skill Agents</div></div>
+      <div class="stat"><div class="val">17</div><div class="lbl">Rule Files</div></div>
+      <div class="stat"><div class="val">371</div><div class="lbl">KB Graph Nodes</div></div>
+      <div class="stat"><div class="val">3,863</div><div class="lbl">Graph Edges</div></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="tag">What it does</div>
+      <h3>From spec → running tests</h3>
+      <p>A developer runs <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-run [feature]</code> and the pipeline autonomously: grooms a KB-seeded test plan, generates exhaustive BE &amp; FE test cases, writes Java automation code via a Codex convergence loop, executes tests against STAGE, files Jira bugs, and optionally runs Gatling perf simulations.</p>
+    </div>
+    <div class="card">
+      <div class="tag">Tech Stack</div>
+      <h3>Key Components</h3>
+      <ul>
+        <li>BE Automation: Java 15 + RestAssured + TestNG + Allure</li>
+        <li>FE Automation: Java 15 + Playwright + TestNG + CSV-driven data</li>
+        <li>Knowledge Graph: Neo4j (371 nodes, 3863 edges)</li>
+        <li>Submodules: BE_Automation + fe-automation (independent CI)</li>
+        <li>Code review agent: Claude ↔ Codex autonomous loop</li>
+        <li>Bug filing: qa-jira-log with fingerprint dedup</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="tag">Invocation</div>
+      <h3>Main Commands</h3>
+      <ul>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-run</code> — full 13-phase pipeline</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-groom</code> — KB-grounded seed only</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-plan</code> — test plan (no cases)</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-automate</code> — automation code only</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-copy-check</code> — UI copy/language QA</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-perf</code> — Gatling simulation generation</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-jira-log</code> — file bugs from failures</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">/qa-rag</code> — RAG query over KB</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="tag">Key Flags</div>
+      <h3>Runtime Options</h3>
+      <ul>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--fix-testids</code> — opt-in fixer for missing data-testid</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--monkey</code> — adversarial LIVE stage mutations</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--codex-review</code> — enable Codex convergence loop</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--no-perf</code> — skip Phase 12 Gatling</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--full</code> — full groom (not change-scoped)</li>
+        <li><code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--push</code> — push KB updates to Neo4j</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ────────────── PIPELINE ────────────── -->
+<section class="section" id="tab-pipeline">
+<div class="section-inner">
+  <h1>Pipeline Phases</h1>
+  <p class="subtitle">Click any phase card to expand details. Phases run sequentially; sub-phases run within parent phase.</p>
+
+  <div class="pipeline-scroll">
+    <div class="pipeline-track" id="pipeline-track"></div>
+  </div>
+  <div id="phase-detail-panel" class="phase-detail"></div>
+</div>
+</section>
+
+<!-- ────────────── TOKENS ────────────── -->
+<section class="section" id="tab-tokens">
+<div class="section-inner">
+  <h1>Token Consumption</h1>
+  <p class="subtitle">Estimated tokens per phase. Full run: ~400–600k input+output. Codex loop adds ~20k/round.</p>
+
+  <div class="token-chart" id="token-chart"></div>
+
+  <div style="margin-top:32px">
+    <div class="grid-3">
+      <div class="card">
+        <div class="tag">Largest Phase</div>
+        <h3>Phase 6 — Case Gen</h3>
+        <p><span style="color:var(--blue);font-size:22px;font-weight:700">145k</span> tokens<br>BE: 90k (exhaustive API) + FE: 55k (persona journeys). Split effort avoids token waste on low-signal FE permutations.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Grounding Phase</div>
+        <h3>Phase 1 — Groom</h3>
+        <p><span style="color:var(--blue);font-size:22px;font-weight:700">120k</span> tokens<br>Neo4j graph walk + repos/ source traversal + oracle error codes. Highest single-phase cost but sets quality floor for everything downstream.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Code Gen Phase</div>
+        <h3>Phase 7 — Automate</h3>
+        <p><span style="color:var(--blue);font-size:22px;font-weight:700">110k</span> tokens<br>Full SOLID-compliant Java generation. Codex convergence loop (Phase 6.1) adds ~20k/round × 2–4 rounds on top.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:28px;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px">
+    <h3 style="margin-bottom:12px">Cost optimisation techniques in use</h3>
+    <div class="grid-2">
+      <ul style="color:var(--fg-muted);font-size:13px;padding-left:18px;line-height:1.9">
+        <li>Neo4j graph replaces full file scan (60% token savings on exploration)</li>
+        <li>Change-scoped groom: only touches modified paths by default</li>
+        <li>BE max / FE medium split: saves ~40k on low-signal FE permutations</li>
+      </ul>
+      <ul style="color:var(--fg-muted);font-size:13px;padding-left:18px;line-height:1.9">
+        <li>Convergence gate = 0 CRIT/MAJOR × 2 rounds, not exhaustive rounds</li>
+        <li>SPEC-ONLY flag skips graph traversal when KB not needed</li>
+        <li>Dry-run gate on Jira filing prevents double-spend on re-runs</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ────────────── MY WORK ────────────── -->
+<section class="section" id="tab-coverage">
+<div class="section-inner">
+  <h1>My Test Automation Work</h1>
+  <p class="subtitle">Test cases authored across all features. All in BE_Automation + fe-automation submodules (Java 15 + RestAssured/Playwright + TestNG).</p>
+
+  <div class="stat-row" style="margin-bottom:28px">
+    <div class="stat"><div class="val" style="color:var(--green)">500+</div><div class="lbl">Total TCs Automated</div></div>
+    <div class="stat"><div class="val" style="color:var(--blue)">7</div><div class="lbl">Features Covered</div></div>
+    <div class="stat"><div class="val" style="color:var(--purple)">77+24</div><div class="lbl">BE+FE Bulk Inv</div></div>
+    <div class="stat"><div class="val" style="color:var(--amber)">180</div><div class="lbl">Adjustment Rows</div></div>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table class="coverage-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>BE Cases</th>
+        <th>FE Cases</th>
+        <th>Total</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>TimeOff / FMS-3459</strong></td>
+        <td class="tc-be">72 BE</td>
+        <td class="tc-fe">38 FE + 8 E2E</td>
+        <td class="tc-num">118</td>
+        <td style="color:var(--fg-muted);font-size:12px">Dynamic date seeding; LeavePolicy workflow-ordered; 14 passing, 5 disabled (known defects/env)</td>
+      </tr>
+      <tr>
+        <td><strong>Bulk Invoice Generation</strong></td>
+        <td class="tc-be">77 BE</td>
+        <td class="tc-fe">24 FE</td>
+        <td class="tc-num">101</td>
+        <td style="color:var(--fg-muted);font-size:12px">TC_001–109 contiguous; JSON-mutation + file-upload stepper paths; signed URL encoding fix; STAGE 403 blocker</td>
+      </tr>
+      <tr>
+        <td><strong>Adjustments</strong></td>
+        <td class="tc-be">41 BE</td>
+        <td class="tc-fe">—</td>
+        <td class="tc-num">41</td>
+        <td style="color:var(--fg-muted);font-size:12px">180 tracking rows; 7 new classes; "Failed - Known Defect" status introduced; STAGE payroll tagging non-functional</td>
+      </tr>
+      <tr>
+        <td><strong>Vendor Module</strong></td>
+        <td class="tc-be">TC-037–052 BE</td>
+        <td class="tc-fe">22 FE (17 pass)</td>
+        <td class="tc-num">38</td>
+        <td style="color:var(--fg-muted);font-size:12px">Float fee + email/bank validations; 5 real findings; animated-drawer nav fix; vendor cache pattern</td>
+      </tr>
+      <tr>
+        <td><strong>Calendar Events</strong></td>
+        <td class="tc-be">48/68 BE</td>
+        <td class="tc-fe">—</td>
+        <td class="tc-num">77</td>
+        <td style="color:var(--fg-muted);font-size:12px">VENDOR_STATUTORY DB seeder tagged QA-AUTOMATION-SEED; STAGE=calendar-preprod; TC-027/028 blocked</td>
+      </tr>
+      <tr>
+        <td><strong>Agency Team/Roles</strong></td>
+        <td class="tc-be">BE</td>
+        <td class="tc-fe">FE done</td>
+        <td class="tc-num">—</td>
+        <td style="color:var(--fg-muted);font-size:12px">KB-grounded plan; PRD spec ahead of code; deleteRoleV2 FINDING; STAGE incident resolved</td>
+      </tr>
+      <tr>
+        <td><strong>People Docs (Payslip/Form16)</strong></td>
+        <td class="tc-be">BE</td>
+        <td class="tc-fe">FE</td>
+        <td class="tc-num">30</td>
+        <td style="color:var(--fg-muted);font-size:12px">DTO-validated; fixture-gated (null document on STAGE); mr-review gate clean</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div style="margin-top:28px">
+    <h2>Architecture Patterns I Established</h2>
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card">
+        <div class="tag">BE Pattern</div>
+        <h3>SOLID Automation Classes</h3>
+        <p>Each feature gets dedicated provisioner + test class hierarchy. Shared fixtures via <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">getOrCreate</code> pattern. DTO-typed responses, no bare assertNotNull. <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">@AfterMethod</code> cleanup, never try/finally in tests.</p>
+      </div>
+      <div class="card">
+        <div class="tag">FE Pattern</div>
+        <h3>Page Object + CSV-Driven</h3>
+        <p>CSV row = one test. <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">dependsOnMethods</code> chains must re-navigate themselves (page state doesn't carry). Playwright locators target <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">data-testid</code>. FE compiles against BE jar.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Data Strategy</div>
+        <h3>Dynamic Date Seeding</h3>
+        <p>All time-sensitive fixtures offset from <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">LocalDate.now()</code>. Fixed the static-date collision bug that caused parallel run failures in TimeOff suite.</p>
+      </div>
+      <div class="card">
+        <div class="tag">Defect Pattern</div>
+        <h3>Known-Defect Tagging</h3>
+        <p>Reproducing a tracked defect must <em>fail</em> the test, not pass it. Defect tests tagged <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">[Negative] [BUG - reason] TC-NNN</code> for traceability.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ────────────── ADDITIONS ────────────── -->
+<section class="section" id="tab-additions">
+<div class="section-inner">
+  <h1>Pipeline Additions After My Work</h1>
+  <p class="subtitle">Infrastructure and pipeline enhancements built on top of the test automation foundation.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot blue"></div>
+      <div class="tl-when">Phase 1 Enhancement</div>
+      <div class="tl-title">qa-groom — KB-Grounded Seed</div>
+      <div class="tl-desc">Neo4j code-graph + repos/ source traversal + oracle error codes. Change-scoped by default. <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--full</code>, <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--monkey</code>, <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--push</code> flags. Seeds the QA oracle that all downstream phases trust.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot blue"></div>
+      <div class="tl-when">Phase 3.1</div>
+      <div class="tl-title">qa-rag — RAG over KB</div>
+      <div class="tl-desc">Semantic search over the grounded knowledge base. Feeds fixture readiness checks and plan generation with existing test context.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot amber"></div>
+      <div class="tl-when">Phase 3.3</div>
+      <div class="tl-title">Fixture Readiness Check</div>
+      <div class="tl-desc">Validates that all required fixtures (users, entities, configs) exist on STAGE before spending tokens on codegen. Blocks early.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot amber"></div>
+      <div class="tl-when">Phase 3.5 — Opt-in</div>
+      <div class="tl-title">Adversarial Monkey Sweep</div>
+      <div class="tl-desc">LIVE STAGE mutations testing boundary conditions. OVER_ACCEPT findings → <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--amber)">[PRODUCT-FINDING]</code>. VALIDATION_GAP → test robustness. Opt-in via <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--monkey</code> because STAGE side-effects are not always reversible.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot amber"></div>
+      <div class="tl-when">Phase 3/Phase 8 Gates</div>
+      <div class="tl-title">Testid Gate System (Gate 1 + Gate 2)</div>
+      <div class="tl-desc"><strong>Gate 1</strong>: static lint before any FE codegen. Checks testid-required.json list against the contract-web codebase. <strong>Gate 2</strong>: DOM probe before FE main codegen. Both emit-and-block by default. Missing testids → <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">contract-web-testid-fixer</code> raises MR but never self-merges.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot purple"></div>
+      <div class="tl-when">Phase 6</div>
+      <div class="tl-title">Split BE/FE Case Generation</div>
+      <div class="tl-desc">BE = max effort (exhaustive API permutations). FE = medium (persona journeys + monkey paths). Separate CSV outputs. BE CSV generated first because FE arrange layer uses BE Provisioner helpers.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot purple"></div>
+      <div class="tl-when">Phase 6.1 — Opt-in</div>
+      <div class="tl-title">Codex Convergence Loop</div>
+      <div class="tl-desc">Autonomous Claude ↔ Codex code review loop. Convergence = 0 CRIT/MAJOR findings × 2 consecutive rounds, or MAX_ROUNDS (default 4). Each round: Claude reviews → Codex fixes → Claude re-reviews. No human bottleneck.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot purple"></div>
+      <div class="tl-when">Phase 7 Enhancement</div>
+      <div class="tl-title">BE Design-Doc Template</div>
+      <div class="tl-desc">Structured design doc generated before BE codegen. Forces agent to think through data flow, error paths, and fixture dependencies before writing test code.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot purple"></div>
+      <div class="tl-when">Phase 7 Enhancement</div>
+      <div class="tl-title">FE Red-Green Learnings</div>
+      <div class="tl-desc">Codified lessons from failed FE test runs fed back into the codegen rule. Prevents recurring Playwright locator bugs, timing issues, and page-state assumptions.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot blue"></div>
+      <div class="tl-when">Phase 10.1</div>
+      <div class="tl-title">Codex Post-Execution Verify</div>
+      <div class="tl-desc">After test run, Codex reviews failure logs and proposes fixes for flaky/environment issues vs real bugs. Feeds qa-jira-log with classified failures.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot red"></div>
+      <div class="tl-when">Phase 11</div>
+      <div class="tl-title">qa-jira-log — Automated Bug Filing</div>
+      <div class="tl-desc">Fingerprint-based dedup (label <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">qa-fp-{hash}</code>) prevents duplicate tickets. Dry-run gate shows diffs before filing. Back-links test markers to Jira issues. Structured priority/severity from failure classification.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot green"></div>
+      <div class="tl-when">Phase 12 — Opt-in</div>
+      <div class="tl-title">Gatling Performance Simulations</div>
+      <div class="tl-desc">Auto-generates Gatling Scala simulations from BE test patterns. Gate = 0 failures. ~115 existing simulations. Skip via <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">--no-perf</code>.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot teal" style="background:rgba(57,211,83,.2);border-color:var(--teal)"></div>
+      <div class="tl-when">Cross-cutting</div>
+      <div class="tl-title">code-review-graph MCP — Neo4j Knowledge Graph</div>
+      <div class="tl-desc">371 nodes, 3863 edges, 58 files. Tools: semantic_search_nodes, get_impact_radius, query_graph, detect_changes, get_affected_flows. 60% token savings vs file scanning. Auto-updates on file changes via hooks.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot blue"></div>
+      <div class="tl-when">Cross-cutting</div>
+      <div class="tl-title">Flow-Capture Contract</div>
+      <div class="tl-desc">DevTools recording → <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">{feature}-flow-capture.json</code> + <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">testid-required.json</code> + <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">screens-manifest.json</code>. Feeds testid gates and plan generation. Replaces manual screen analysis.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot purple"></div>
+      <div class="tl-when">Cross-cutting</div>
+      <div class="tl-title">qa-copy-check — UI Language QA</div>
+      <div class="tl-desc">Persona-aware copy/language QA. Vision checks by reading PNGs directly (no external API). Capture → judge → report lane. Catches tone mismatches, truncation, missing translations.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ────────────── IMPROVEMENTS ────────────── -->
+<section class="section" id="tab-improvements">
+<div class="section-inner">
+  <h1>What Can Still Improve</h1>
+  <p class="subtitle">Honest assessment of gaps, rough edges, and open opportunities.</p>
+
+  <div class="impr-grid">
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>STAGE Environment Stability</h4>
+      <p>STAGE is shared; payroll tagging was non-functional for weeks (confirmed 2026-07-16). Tests depend on live STAGE state but have no circuit-breaker. Solution: environment health probe as Phase 0 gate; auto-quarantine env-blocked tests vs real failures.</p>
+    </div>
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>FE Coverage Gap</h4>
+      <p>FE automation at medium effort means some edge-case permutations are intentionally skipped. Over time, monkey sweep findings that become regression risks aren't automatically promoted to the FE CSV. Need a promotion mechanism from PRODUCT-FINDING → test case.</p>
+    </div>
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>Submodule Sync Friction</h4>
+      <p>BE_Automation and fe-automation are submodules with independent CI. Parent repo doesn't know submodule test results without explicit pointer updates. CI dashboards for parent and submodules are separate. Unified status page would help.</p>
+    </div>
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>Codex Loop MAX_ROUNDS Cap</h4>
+      <p>At MAX_ROUNDS=4 with CRIT findings still open, the loop exits and humans must intervene. There's no escalation path — it just stops. Should emit a structured handoff ticket with exactly which findings remain open and why they didn't converge.</p>
+    </div>
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>contract-web-testid-fixer MR Latency</h4>
+      <p>Fixer raises MR but never self-merges (by design). This creates a bottleneck: FE codegen is blocked until a human merges the testid MR. For high-velocity feature branches, this can stall the pipeline for hours.</p>
+    </div>
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>Neo4j Graph Coverage</h4>
+      <p>KB covers code structure but has gaps: cascades, some error codes, and newer operations not yet in graph. qa-groom notes these as KB-GAP. Currently requires manual gap-filling. Should auto-detect via diff against spec.</p>
+    </div>
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>Dynamic Fixture Resolution at Scale</h4>
+      <p>Fixtures resolved via API/shared CSV providers work but add runtime latency. For large parallel test suites, fixture contention (same entity mutated by two tests) is unresolved. Lock + claim mechanism needed.</p>
+    </div>
+    <div class="impr-card possible">
+      <div class="impr-tag">Opportunity</div>
+      <h4>Gatling Coverage Automation</h4>
+      <p>~115 Gatling simulations exist but coverage is uneven. Phase 12 generates new ones but doesn't track which endpoints have zero perf coverage. Endpoint → simulation coverage map would prioritize what to generate next.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:32px">
+    <h2>Already Solved (Notable Wins)</h2>
+    <div class="impr-grid" style="margin-top:16px">
+      <div class="impr-card done">
+        <div class="impr-tag">Solved</div>
+        <h4>Static Date Collision in Parallel Runs</h4>
+        <p>TimeOff tests used hardcoded dates; parallel runs collided on same entity. Fixed with <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">LocalDate.now()</code>-based seeding with per-test offsets.</p>
+      </div>
+      <div class="impr-card done">
+        <div class="impr-tag">Solved</div>
+        <h4>Signed URL Re-encoding</h4>
+        <p>RestAssured's default URL re-encoding broke pre-signed GCS/S3 URLs. Fixed with <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">urlEncodingEnabled(false)</code>.</p>
+      </div>
+      <div class="impr-card done">
+        <div class="impr-tag">Solved</div>
+        <h4>Duplicate Jira Filing</h4>
+        <p>Re-runs would file duplicate bugs. Fixed with fingerprint label dedup: each failure gets a stable <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">qa-fp-{hash}</code> label; Jira search before filing.</p>
+      </div>
+      <div class="impr-card done">
+        <div class="impr-tag">Solved</div>
+        <h4>FE Page State Propagation Bug</h4>
+        <p>Split-test dependents assumed previous test left page in correct state. Codified rule: every <code style="background:var(--panel);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:12px;color:var(--blue)">dependsOnMethods</code> chain must re-navigate itself.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ────────────── Q&A ────────────── -->
+<section class="section" id="tab-qa">
+<div class="section-inner">
+  <h1>Questions &amp; Answers</h1>
+  <p class="subtitle">Anticipated tech market questions. Click to expand.</p>
+
+  <div class="qa-list" id="qa-list"></div>
+</div>
+</section>
+
+</div>
+
+<script>
+// ── TABS ──
+const tabs = document.querySelectorAll('.tab-btn');
+const sections = document.querySelectorAll('.section');
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = btn.dataset.tab;
+    tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+    sections.forEach(s => s.classList.toggle('active', s.id === 'tab-' + t));
+  });
+});
+
+// ── PHASES DATA ──
+const PHASES = [
+  {
+    id:'1', cmd:'/qa-groom', name:'KB Groom & Seed',
+    badge:'badge-blue', badgeText:'GROUND',
+    tokens:120000,
+    desc:'Neo4j code-graph traversal + repos/ source + oracle error codes. Change-scoped by default. Outputs a structured QA oracle that all downstream phases trust.',
+    inputs:['PRD/spec', 'git diff', 'Neo4j graph', 'repos/ source'],
+    outputs:['groom-seed.md', 'oracle error codes', 'KB deltas'],
+    subPhases:[
+      {id:'3.1', name:'qa-rag query', desc:'Semantic search over KB for existing test context'},
+      {id:'3.2', name:'Scope detection', desc:'Identify changed files/endpoints for targeted grounding'},
+      {id:'3.3', name:'Fixture readiness', desc:'Validate required STAGE fixtures exist before codegen'},
+      {id:'3.4', name:'Spec alignment', desc:'Map PRD requirements to existing oracle entries'},
+      {id:'3.5', name:'Monkey sweep (opt-in)', desc:'LIVE STAGE mutations; OVER_ACCEPT → PRODUCT-FINDING; VALIDATION_GAP → robustness'},
+    ]
+  },
+  {
+    id:'2', cmd:'/qa-plan', name:'Test Plan',
+    badge:'badge-blue', badgeText:'PLAN',
+    tokens:40000,
+    desc:'Generates structured test plan from groomed oracle. Scope: feature boundary, risk areas, personas, pass/fail criteria. Does NOT generate test cases.',
+    inputs:['groom-seed.md', 'PRD', 'risk matrix'],
+    outputs:['test-plan.md', 'scope doc', 'persona map'],
+    subPhases:[]
+  },
+  {
+    id:'3', cmd:'Phase 3', name:'Copy Check',
+    badge:'badge-blue', badgeText:'COPY',
+    tokens:15000,
+    desc:'qa-copy-check: persona-aware UI language QA. Vision checks by reading PNGs directly. Capture → judge → report lane. Catches tone mismatches, truncation, missing translations.',
+    inputs:['screen recordings', 'screens-manifest.json', 'persona def'],
+    outputs:['copy-report.md', 'findings list'],
+    subPhases:[]
+  },
+  {
+    id:'4', cmd:'Phase 4', name:'Gate 1: Testid Lint',
+    badge:'badge-amber', badgeText:'GATE',
+    tokens:8000,
+    desc:'Static lint of testid-required.json against contract-web codebase. Emit-and-block by default. Missing testids → contract-web-testid-fixer raises MR (never self-merges).',
+    inputs:['testid-required.json', 'contract-web source'],
+    outputs:['testid-report.md', 'MR (if missing)'],
+    subPhases:[]
+  },
+  {
+    id:'5', cmd:'Phase 5', name:'Case Gen: BE',
+    badge:'badge-purple', badgeText:'GEN',
+    tokens:90000,
+    desc:'BE test case generation at MAX effort. Exhaustive API permutations: happy paths, boundary values, negative cases, error codes from oracle. Outputs CSV.',
+    inputs:['test-plan.md', 'oracle', 'API schema'],
+    outputs:['be-test-cases.csv', 'BE scope doc'],
+    subPhases:[]
+  },
+  {
+    id:'6', cmd:'Phase 6', name:'Case Gen: FE',
+    badge:'badge-purple', badgeText:'GEN',
+    tokens:55000,
+    desc:'FE test case generation at MEDIUM effort. Persona journeys + monkey paths. Separate CSV. FE generated after BE because FE arrange layer uses BE Provisioner helpers.',
+    inputs:['test-plan.md', 'flow-capture.json', 'BE CSV'],
+    outputs:['fe-test-cases.csv', 'FE scope doc'],
+    subPhases:[
+      {id:'6.1', name:'Codex Convergence Loop (opt-in)', desc:'Claude↔Codex review loop. Convergence=0 CRIT/MAJOR×2 rounds or MAX_ROUNDS(4). Each round: Claude reviews→Codex fixes→Claude re-reviews'},
+      {id:'6.7', name:'CSV reconciliation', desc:'Ensure @Test description text matches CSV row exactly; test-count vs CSV-row parity check'},
+    ]
+  },
+  {
+    id:'7', cmd:'/qa-automate', name:'Code Generation',
+    badge:'badge-purple', badgeText:'CODE',
+    tokens:110000,
+    desc:'SOLID-compliant Java generation. BE: RestAssured+TestNG provisioner+test classes. FE: Playwright+TestNG page-object pattern. BE design-doc template forces planning before coding.',
+    inputs:['be-test-cases.csv', 'fe-test-cases.csv', 'existing code patterns'],
+    outputs:['BE Java classes', 'FE Java classes', 'design-doc.md'],
+    subPhases:[]
+  },
+  {
+    id:'8', cmd:'Phase 8', name:'Gate 2: DOM Probe',
+    badge:'badge-amber', badgeText:'GATE',
+    tokens:12000,
+    desc:'Live DOM probe before FE main codegen. Verifies testid selectors exist in running app. Blocks FE codegen if probe fails. Feeds actual selector map to code generator.',
+    inputs:['testid-required.json', 'running app URL'],
+    outputs:['dom-probe-report.md', 'selector map'],
+    subPhases:[]
+  },
+  {
+    id:'9', cmd:'Phase 9', name:'Compile Check',
+    badge:'badge-green', badgeText:'BUILD',
+    tokens:5000,
+    desc:'Maven compile of both BE and FE submodules. FE compiles against BE jar. Surfaces import errors, type mismatches before execution. CI config via fe-automation/ci/feature.env.',
+    inputs:['BE Java classes', 'FE Java classes', 'BE jar'],
+    outputs:['build result', 'compiler errors'],
+    subPhases:[]
+  },
+  {
+    id:'10', cmd:'Phase 10', name:'Test Execution',
+    badge:'badge-green', badgeText:'RUN',
+    tokens:20000,
+    desc:'TestNG execution against STAGE. Allure report generation. Failure classification: env-blocked vs real bugs. Dynamic fixture resolution at runtime.',
+    inputs:['compiled jars', 'STAGE credentials', 'TestNG XMLs'],
+    outputs:['Allure report', 'failure log', 'pass/fail counts'],
+    subPhases:[
+      {id:'10.1', name:'Codex post-execution verify', desc:'Codex reviews failure logs; proposes fixes for flaky/env issues vs real bugs; feeds qa-jira-log with classified failures'},
+    ]
+  },
+  {
+    id:'11', cmd:'/qa-jira-log', name:'Bug Filing',
+    badge:'badge-red', badgeText:'BUGS',
+    tokens:20000,
+    desc:'Fingerprint dedup (qa-fp-{hash} label). Dry-run gate shows diffs before filing. Back-links test markers to Jira. Structured priority/severity from failure classification.',
+    inputs:['failure log', 'Allure report', 'Jira project config'],
+    outputs:['Jira tickets', 'dedup report', 'back-link markers'],
+    subPhases:[
+      {id:'11.1', name:'Dry-run gate', desc:'Show exactly which tickets would be filed; require confirmation before actual filing'},
+    ]
+  },
+  {
+    id:'12', cmd:'/qa-perf', name:'Gatling Perf (opt-in)',
+    badge:'badge-teal', badgeText:'PERF',
+    tokens:25000,
+    desc:'Auto-generates Gatling Scala simulations from BE test patterns. Gate=0 failures. ~115 existing simulations. Skip via --no-perf.',
+    inputs:['BE test patterns', 'endpoint list', 'load targets'],
+    outputs:['Gatling simulations', 'perf report'],
+    subPhases:[]
+  },
+  {
+    id:'13', cmd:'Phase 13', name:'Report & Handoff',
+    badge:'badge-gray', badgeText:'DONE',
+    tokens:5000,
+    desc:'Consolidated run report: phase results, token spend, coverage delta, open Jira count, perf summary. Handoff artifact for team review.',
+    inputs:['all phase outputs'],
+    outputs:['run-report.md', 'coverage delta', 'open issues'],
+    subPhases:[]
+  },
+];
+
+const MAX_TOKENS = 145000;
+const track = document.getElementById('pipeline-track');
+const detailPanel = document.getElementById('phase-detail-panel');
+let openPhase = null;
+
+PHASES.forEach((ph, i) => {
+  const col = document.createElement('div');
+  col.className = 'phase-col';
+
+  if (i > 0) {
+    const arr = document.createElement('div');
+    arr.className = 'phase-arrow';
+    arr.textContent = '›';
+    track.appendChild(arr);
+  }
+
+  const card = document.createElement('div');
+  card.className = 'phase-card';
+  const pct = Math.min(100, Math.round(ph.tokens / MAX_TOKENS * 100));
+  card.innerHTML = `
+    <div class="phase-num">Phase ${ph.id}</div>
+    <div class="phase-name">${ph.name}</div>
+    <span class="phase-badge ${ph.badge}">${ph.badgeText}</span>
+    <div class="token-bar"><div class="token-fill" style="width:${pct}%"></div></div>
+    <div style="font-size:10px;color:var(--fg-muted);margin-top:4px;font-family:ui-monospace,monospace">${(ph.tokens/1000).toFixed(0)}k tokens</div>
+  `;
+  card.addEventListener('click', () => {
+    const isOpen = openPhase === ph.id;
+    document.querySelectorAll('.phase-card').forEach(c => c.classList.remove('open'));
+    if (isOpen) {
+      openPhase = null;
+      detailPanel.classList.remove('open');
+      detailPanel.innerHTML = '';
+    } else {
+      openPhase = ph.id;
+      card.classList.add('open');
+      showDetail(ph);
+    }
+  });
+
+  col.appendChild(card);
+  track.appendChild(col);
+});
+
+function showDetail(ph) {
+  const inp = ph.inputs.map(i => `<span class="chip in">${i}</span>`).join('');
+  const out = ph.outputs.map(o => `<span class="chip out">${o}</span>`).join('');
+  const subs = ph.subPhases.length ? `
+    <div class="sub-phases">
+      <h4 style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-muted);margin-bottom:4px">Sub-phases</h4>
+      ${ph.subPhases.map(s => `
+        <div class="sub-phase">
+          <div class="sub-phase-id">${s.id}</div>
+          <div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:2px">${s.name}</div>
+            <div class="sub-phase-desc">${s.desc}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  detailPanel.innerHTML = `
+    <h3>Phase ${ph.id}: ${ph.name} <span class="phase-badge ${ph.badge}" style="margin-left:8px">${ph.badgeText}</span></h3>
+    <p style="color:var(--fg-muted);font-size:13px;margin-top:8px;line-height:1.6">${ph.desc}</p>
+    <div class="token-info">
+      <span class="tk">~${(ph.tokens/1000).toFixed(0)}k</span>
+      <span style="color:var(--fg-muted);font-size:12px;margin-left:8px">estimated tokens</span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-section">
+        <h4>Inputs</h4>
+        <div class="chip-list">${inp}</div>
+      </div>
+      <div class="detail-section">
+        <h4>Outputs</h4>
+        <div class="chip-list">${out}</div>
+      </div>
+    </div>
+    ${subs}
+  `;
+  detailPanel.classList.add('open');
+  detailPanel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── TOKEN CHART ──
+const tokenPhases = [
+  {label:'1 · Groom', val:120000, color:'var(--blue)'},
+  {label:'2 · Plan', val:40000, color:'var(--blue)'},
+  {label:'3 · Copy Check', val:15000, color:'var(--fg-muted)'},
+  {label:'4 · Gate 1', val:8000, color:'var(--amber)'},
+  {label:'5 · Cases BE', val:90000, color:'var(--purple)'},
+  {label:'6 · Cases FE', val:55000, color:'var(--purple)'},
+  {label:'6.1 · Codex Loop', val:80000, color:'rgba(188,140,255,.5)'},
+  {label:'7 · Code Gen', val:110000, color:'var(--purple)'},
+  {label:'8 · Gate 2', val:12000, color:'var(--amber)'},
+  {label:'9 · Compile', val:5000, color:'var(--green)'},
+  {label:'10 · Execute', val:20000, color:'var(--green)'},
+  {label:'11 · Bug Log', val:20000, color:'var(--red)'},
+  {label:'12 · Gatling', val:25000, color:'var(--teal)'},
+  {label:'13 · Report', val:5000, color:'var(--fg-muted)'},
+];
+const MAX_T = 145000;
+const chart = document.getElementById('token-chart');
+tokenPhases.forEach(p => {
+  const pct = Math.min(100, Math.round(p.val / MAX_T * 100));
+  const row = document.createElement('div');
+  row.className = 'token-row';
+  row.innerHTML = `
+    <div class="token-label">${p.label}</div>
+    <div class="token-track">
+      <div class="token-segment" style="width:${pct}%;background:${p.color}"></div>
+    </div>
+    <div class="token-val">${p.val >= 1000 ? (p.val/1000).toFixed(0)+'k' : p.val}</div>
+  `;
+  chart.appendChild(row);
+});
+
+// ── Q&A ──
+const QA = [
+  {
+    q: 'Why Java for both BE and FE automation? Most FE tools use JS/TS.',
+    a: `<strong>Consistency over convention.</strong> The platform team already owns Java 15 for BE services. Using the same language means: shared provisioner helpers compile into a jar that FE tests import directly (<code>fe-automation</code> compiles against the BE jar), one CI config, one Allure reporter, one TestNG execution model. The cost of Playwright's Java API is small compared to the benefit of zero context-switch and shared fixture code.`
+  },
+  {
+    q: 'Why are BE/FE automation in submodules, not the parent repo?',
+    a: `<strong>Independent CI ownership and deploy lifecycle.</strong> Test code changes at a different cadence than the pipeline. Submodules let BE_Automation and fe-automation each have their own CI pipelines, reviewers, and release branches without polluting the pipeline's commit history. The parent repo tracks submodule pointers—you always know which test version ran against which pipeline version.`
+  },
+  {
+    q: 'Why is Neo4j mandatory? Isn\'t it overkill for a QA pipeline?',
+    a: `<strong>Gap detection you can't do from specs alone.</strong> The graph catches two things flat text can't: (1) CODE-ONLY gaps—endpoints/validations that exist in code but are never mentioned in the PRD, so they'd be missed entirely; (2) SPEC-ONLY gaps—features described in the PRD that have no matching code, revealing spec drift. 371 nodes + 3863 edges also give instant impact-radius for any changed file—60% token savings vs manual file scanning.`
+  },
+  {
+    q: 'Why is the monkey sweep opt-in and not always on?',
+    a: `<strong>LIVE STAGE side effects are not always reversible.</strong> The monkey sweep mutates real STAGE data. Some mutations (e.g., creating or modifying payroll entities) can affect other tests running in parallel or leave state that's expensive to clean up. Making it opt-in (<code>--monkey</code>) means teams choose when their STAGE is in a clean enough state to accept the risk.`
+  },
+  {
+    q: 'The testid gate emit-and-block seems harsh. Why not just warn?',
+    a: `<strong>FE tests that can't find elements are worthless.</strong> A warning-only gate would let codegen proceed and then fail at runtime with confusing selector errors. Blocking early forces the right conversation: either the product team adds testids (via the auto-raised MR) or the QA team adjusts the testid-required.json. The fixer automates the MR but deliberately never self-merges—cross-team repo changes need human sign-off.`
+  },
+  {
+    q: 'Why is BE generated at max effort and FE at medium?',
+    a: `<strong>Signal-to-noise ratio.</strong> API test cases benefit from exhaustive permutation—every HTTP error code, every boundary value, every mutation path matters for BE coverage. FE test cases above "persona journey + monkey path" quickly become redundant: the same UI flow with different valid data doesn't add coverage but does add 40k+ tokens. The split saves cost without sacrificing meaningful coverage.`
+  },
+  {
+    q: 'The Codex convergence loop is fully autonomous. What if it converges on wrong code?',
+    a: `<strong>Convergence means zero CRIT/MAJOR findings, not perfect code.</strong> Claude acts as the reviewer with specific rules (SOLID, testid usage, no try/finally in tests, etc.). If after MAX_ROUNDS=4 rounds CRIT findings remain, the loop exits and the failure is surfaced—it doesn't silently ship bad code. The dry-run gate on Jira filing is a further checkpoint before any findings become tickets.`
+  },
+  {
+    q: 'Why BE-before-FE ordering in case generation?',
+    a: `<strong>Compile-time dependency.</strong> The FE arrange layer uses BE Provisioner helper classes. If FE test cases are generated first and reference provisioner methods that don't exist yet in the BE jar, the FE code won't compile. Generating BE first, then building the BE jar, ensures FE has a stable contract to compile against. This is enforced in <code>qa-orchestrator.mdc</code> as a hard ordering rule.`
+  },
+  {
+    q: 'Why CSV format for test cases? Why not a proper test management tool?',
+    a: `<strong>Machine-readable 1:1 mapping.</strong> Each CSV row maps exactly to one <code>@Test</code> annotation. The code generator can parse CSV deterministically, and the reconciliation check (CSV row count = @Test count, description text must match) is trivial to automate. A test management tool would require API integration and introduce a sync problem—the CSV IS the source of truth, living alongside the code in the repo.`
+  },
+  {
+    q: 'How does the pipeline know what a "real bug" is vs an environment issue?',
+    a: `<strong>Phase 10.1: Codex post-execution classify.</strong> After test execution, Codex reviews the failure log against known patterns: 403/401 → environment/auth; connection refused → STAGE down; assertion failure on known-defect-tagged TC → already tracked. This classification determines Jira priority/severity and whether qa-jira-log should file a new ticket or reference an existing one via fingerprint dedup.`
+  },
+  {
+    q: 'How many tokens does a full pipeline run actually cost?',
+    a: `<strong>~400–600k tokens depending on feature size and flags.</strong> Breakdown: groom=120k, plan=40k, copy=15k, gates=20k, BE cases=90k, FE cases=55k, code gen=110k, execution+jira=40k, report=5k. If Codex loop runs 4 rounds, add ~80k. If Gatling runs, add ~25k. The graph traversal (via MCP) replaces what would be ~60% more tokens from raw file reading.`
+  },
+];
+
+const qaList = document.getElementById('qa-list');
+QA.forEach(item => {
+  const el = document.createElement('div');
+  el.className = 'qa-item';
+  el.innerHTML = `
+    <div class="qa-q">
+      <div class="qa-q-text">Q: ${item.q}</div>
+      <div class="qa-icon">+</div>
+    </div>
+    <div class="qa-a">${item.a}</div>
+  `;
+  el.querySelector('.qa-q').addEventListener('click', () => {
+    el.classList.toggle('open');
+  });
+  qaList.appendChild(el);
+});
+</script>
+
+</body></html>
